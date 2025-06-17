@@ -67,14 +67,14 @@ NOT DETERMINISTIC
 READS SQL DATA
 BEGIN
     DECLARE totalProductos INT;
-    -- IF ROW_COUNT() <=0 THEN
+    -- IF NOT EXISTS (SELECT 1 FROM producto WHERE id_fabricante = cod_fab)
     --     SIGNAL SQLSTATE VALUE '40001'
     --         SET MESSAGE_TEXT = 'no existe un fabricante con ese ID';
     -- END IF;
+
     SELECT COUNT(id) INTO totalProductos
     FROM producto
     WHERE id_fabricante = cod_fab;
-
     RETURN totalProductos;
 END $$
 DELIMITER;
@@ -90,12 +90,12 @@ NOT DETERMINISTIC
 READS SQL DATA
 BEGIN
     DECLARE precioMinimo DECIMAL(10, 2);
+
     SELECT precio INTO precioMinimo
     FROM producto
     WHERE id_fabricante = cod_fab
     ORDER BY precio ASC
     LIMIT 1;
-
     RETURN precioMinimo;
 END $$
 DELIMITER;
